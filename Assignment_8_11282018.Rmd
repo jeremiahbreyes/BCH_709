@@ -1,0 +1,90 @@
+---
+title: "Assignment_8"
+output:
+  html_document:
+    toc: yes
+editor_options:
+  chunk_output_type: inline
+---
+
+
+```{r install, load, and use gapminder}
+
+library("gapminder")
+data("gapminder")
+summary(gapminder)
+
+#assigning a variable
+
+x <- mean(gapminder$gdpPercap)
+x
+
+attach(gapminder)
+median(pop)
+
+```
+
+```{r plots for gapminder after attaching}
+
+
+hist(lifeExp)
+hist(pop)
+hist(log(pop))
+boxplot(lifeExp ~ continent)
+plot(lifeExp ~ gdpPercap)
+plot(lifeExp ~ log(gdpPercap))
+```
+```{r Dataset manipulation}
+
+library(dplyr)
+gapminder %>%
+  select(country, lifeExp) %>%
+  filter(country == "South Africa" |
+           country == "Ireland") %>%
+  group_by(country) %>%
+  summarise(Average_life = mean(lifeExp))
+
+
+```
+```{r T-test}
+
+
+df1 <- gapminder %>%
+  select(country, lifeExp) %>%
+  filter(country == "South Africa" |
+           country == "Ireland")
+
+t.test(data = df1, lifeExp ~ country)
+
+
+```
+
+```{r ggplot2 segment}
+
+library(ggplot2)
+
+#XY plot
+
+gapminder %>%
+  filter(gdpPercap < 50000) %>%
+  ggplot(aes(x=gdpPercap, y=lifeExp))+
+  geom_point()
+
+#add colors to continent
+
+gapminder %>%
+  filter(gdpPercap < 50000) %>%
+  ggplot(aes(x=log(gdpPercap), y=lifeExp, col=year, size=pop))+
+  geom_point(alpha=0.3)+
+  geom_smooth(method=lm)+
+  facet_wrap(~continent)
+
+```
+```{r linear model}
+
+
+summary(lm(lifeExp ~ gdpPercap+pop))
+
+
+```
+
